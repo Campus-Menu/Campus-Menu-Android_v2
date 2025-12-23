@@ -31,7 +31,6 @@ fun FavoritesScreen(
     LaunchedEffect(refreshTrigger) {
         com.arikan.campusmenu.data.FavoritesRepository.initialize(context)
         favoriteItems = com.arikan.campusmenu.data.FavoritesRepository.getAllFavorites()
-        }
     }
     
     Scaffold(

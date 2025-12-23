@@ -60,7 +60,7 @@ object MenuHistoryRepository {
                 MenuItemData("Nohut Yemeği", listOf()),
                 MenuItemData("Patlıcan Musakka", listOf()),
                 MenuItemData("Sebzeli Tavuk", listOf()),
-                MenuItemData("Balık", listOf(Allergen.FISH)),
+                MenuItemData("Balık", listOf(Allergen.SEAFOOD)),
                 MenuItemData("Köri Soslu Tavuk", listOf()),
                 MenuItemData("Güveç", listOf())
             ),
@@ -82,7 +82,7 @@ object MenuHistoryRepository {
                 MenuItemData("Yeşil Salata", listOf()),
                 MenuItemData("Rus Salatası", listOf(Allergen.EGGS)),
                 MenuItemData("Akdeniz Salata", listOf()),
-                MenuItemData("Ton Balıklı Salata", listOf(Allergen.FISH)),
+                MenuItemData("Ton Balıklı Salata", listOf(Allergen.SEAFOOD)),
                 MenuItemData("Kırmızı Lahana Salatası", listOf())
             ),
             // Tatlılar

@@ -54,7 +54,7 @@ object LocaleHelper {
         "allergies_selected" -> "alerji seçili"
         
         // Home Screen
-        "todays_menu" -> "Günün Menüsü"
+        "todays_menu" -> "ABÜN Yemekhane Menüsü"
         "no_menu" -> "Bugün için menü bulunmuyor"
         "soup" -> "Çorba"
         "main_course" -> "Ana Yemek"
@@ -70,7 +70,7 @@ object LocaleHelper {
         
         // Calendar Screen
         "select_date" -> "Tarih Seçin"
-        "menu_for" -> "Menü:"
+        "menu_for" -> "ABÜN Yemekhane Menüsü"
         
         // Favorites Screen
         "my_favorites" -> "Favorilerim"
@@ -156,7 +156,7 @@ object LocaleHelper {
         "allergies_selected" -> "allergies selected"
         
         // Home Screen
-        "todays_menu" -> "Today's Menu"
+        "todays_menu" -> "ABUN Cafeteria Menu"
         "no_menu" -> "No menu available for today"
         "soup" -> "Soup"
         "main_course" -> "Main Course"
@@ -172,7 +172,7 @@ object LocaleHelper {
         
         // Calendar Screen
         "select_date" -> "Select Date"
-        "menu_for" -> "Menu for"
+        "menu_for" -> "ABUN Cafeteria Menu"
         
         // Favorites Screen
         "my_favorites" -> "My Favorites"

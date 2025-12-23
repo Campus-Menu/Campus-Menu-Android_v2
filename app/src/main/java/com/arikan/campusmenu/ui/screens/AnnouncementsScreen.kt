@@ -147,7 +147,6 @@ fun AnnouncementsScreen(
         }
     }
 }
-}
 
 @Composable
 fun AnnouncementCard(

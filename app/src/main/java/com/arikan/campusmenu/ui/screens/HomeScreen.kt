@@ -101,7 +101,6 @@ fun HomeScreen(
             } else {
                 MenuList(
                     items = filteredItems,
-                    user = user,
                     modifier = Modifier.fillMaxSize()
                 )
             }
