@@ -21,7 +21,6 @@ import com.arikan.campusmenu.ui.theme.CampusMenuTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    user: com.arikan.campusmenu.data.User? = null,
     languageVersion: Int = 0,
     modifier: Modifier = Modifier
 ) {
@@ -29,10 +28,9 @@ fun FavoritesScreen(
     var favoriteItems by remember { mutableStateOf<List<com.arikan.campusmenu.data.FavoriteItem>>(emptyList()) }
     var refreshTrigger by remember { mutableStateOf(0) }
     
-    LaunchedEffect(refreshTrigger, user) {
-        if (user != null) {
-            com.arikan.campusmenu.data.FavoritesRepository.initialize(context)
-            favoriteItems = com.arikan.campusmenu.data.FavoritesRepository.getUserFavorites(user.id)
+    LaunchedEffect(refreshTrigger) {
+        com.arikan.campusmenu.data.FavoritesRepository.initialize(context)
+        favoriteItems = com.arikan.campusmenu.data.FavoritesRepository.getAllFavorites()
         }
     }
     
@@ -69,14 +67,11 @@ fun FavoritesScreen(
                 items(favoriteItems, key = { it.menuItemId }) { favorite ->
                     FavoriteItemCard(
                         favorite = favorite,
-                        user = user,
                         onRemove = {
-                            if (user != null) {
-                                com.arikan.campusmenu.data.FavoritesRepository.removeFavorite(
-                                    context, user.id, favorite.menuItemId
-                                )
-                                refreshTrigger++
-                            }
+                            com.arikan.campusmenu.data.FavoritesRepository.removeFavorite(
+                                context, favorite.menuItemId
+                            )
+                            refreshTrigger++
                         }
                     )
                 }
@@ -88,7 +83,6 @@ fun FavoritesScreen(
 @Composable
 fun FavoriteItemCard(
     favorite: com.arikan.campusmenu.data.FavoriteItem,
-    user: com.arikan.campusmenu.data.User?,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier
 ) {

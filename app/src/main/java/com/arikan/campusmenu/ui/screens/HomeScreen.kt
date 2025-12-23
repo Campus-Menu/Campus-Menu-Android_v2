@@ -36,7 +36,6 @@ import java.util.Locale
 @Composable
 fun HomeScreen(
     selectedDate: LocalDate = LocalDate.now(),
-    user: com.arikan.campusmenu.data.User? = null,
     languageVersion: Int = 0,
     modifier: Modifier = Modifier
 ) {
@@ -44,14 +43,8 @@ fun HomeScreen(
     var selectedCategory by remember { mutableStateOf<MenuCategory?>(null) }
     val menuItems = remember(selectedDate) { MenuHistoryRepository.getMenuForDate(selectedDate) }
     
-    // Alerji filtreleme
-    val allergyFilteredItems = if (user != null && user.allergens.isNotEmpty()) {
-        menuItems.filter { menuItem ->
-            menuItem.allergens.none { it in user.allergens }
-        }
-    } else {
-        menuItems
-    }
+    // Tüm menüyü göster
+    val allergyFilteredItems = menuItems
     
     val filteredItems = if (selectedCategory != null) {
         allergyFilteredItems.filter { it.category == selectedCategory }
@@ -283,14 +276,14 @@ fun MenuItemCard(
                             // Favori butonu
                             var isFavorite by remember { 
                                 mutableStateOf(
-                                    com.arikan.campusmenu.data.FavoritesRepository.isFavorite(user.id, item.id)
+                                    com.arikan.campusmenu.data.FavoritesRepository.isFavorite(item.id)
                                 ) 
                             }
                             
                             IconButton(
                                 onClick = { 
                                     com.arikan.campusmenu.data.FavoritesRepository.toggleFavorite(
-                                        context, user.id, item.id, item.name
+                                        context, item.id, item.name
                                     )
                                     isFavorite = !isFavorite
                                 },

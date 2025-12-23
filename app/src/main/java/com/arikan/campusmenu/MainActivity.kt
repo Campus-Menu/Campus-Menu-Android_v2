@@ -23,21 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.arikan.campusmenu.data.Allergen
-import com.arikan.campusmenu.data.AuthRepository
 import com.arikan.campusmenu.data.StudentRepository
-import com.arikan.campusmenu.data.User
-import com.arikan.campusmenu.data.UserRole
-import com.arikan.campusmenu.ui.screens.AdminMenuScreen
 import com.arikan.campusmenu.ui.screens.AnnouncementsScreen
 import com.arikan.campusmenu.ui.screens.CalendarScreen
 import com.arikan.campusmenu.ui.screens.FavoritesScreen
 import com.arikan.campusmenu.ui.screens.HomeScreen
-import com.arikan.campusmenu.ui.screens.LoginScreen
 import com.arikan.campusmenu.ui.screens.ProfileScreen
-import com.arikan.campusmenu.ui.screens.RoleSelectionScreen
-import com.arikan.campusmenu.ui.screens.StudentLoginScreen
-import com.arikan.campusmenu.ui.screens.StudentRegisterScreen
 import com.arikan.campusmenu.ui.theme.CampusMenuTheme
 import java.time.LocalDate
 
@@ -69,86 +60,15 @@ class MainActivity : ComponentActivity() {
                 StudentRepository.initialize(context)
                 com.arikan.campusmenu.data.FavoritesRepository.initialize(context)
                 
-                var currentUser by rememberSaveable { mutableStateOf<User?>(null) }
-                var showRoleSelection by rememberSaveable { mutableStateOf(true) }
-                var showAdminLogin by rememberSaveable { mutableStateOf(false) }
-                var showStudentLogin by rememberSaveable { mutableStateOf(false) }
-                var showStudentRegister by rememberSaveable { mutableStateOf(false) }
-                
-                when {
-                    currentUser != null -> {
-                        CampusMenuApp(
-                            user = currentUser!!,
-                            languageVersion = languageVersion,
-                            onLogout = { 
-                                AuthRepository.logout()
-                                currentUser = null
-                                showRoleSelection = true
-                                showAdminLogin = false
-                                showStudentLogin = false
-                                showStudentRegister = false
-                            },
-                            onThemeChanged = {
-                                themeUpdateTrigger++
-                            },
-                            onLanguageChanged = {
-                                languageVersion++
-                            }
-                        )
+                CampusMenuApp(
+                    languageVersion = languageVersion,
+                    onThemeChanged = {
+                        themeUpdateTrigger++
+                    },
+                    onLanguageChanged = {
+                        languageVersion++
                     }
-                    showStudentRegister -> {
-                        StudentRegisterScreen(
-                            onRegisterSuccess = {
-                                showStudentRegister = false
-                                showStudentLogin = true
-                            },
-                            onBackToLogin = {
-                                showStudentRegister = false
-                                showStudentLogin = true
-                            }
-                        )
-                    }
-                    showAdminLogin -> {
-                        LoginScreen(
-                            onLoginSuccess = { user -> 
-                                currentUser = user
-                                showAdminLogin = false
-                            },
-                            onNavigateToRegister = { 
-                                showAdminLogin = false
-                                showRoleSelection = true
-                            }
-                        )
-                    }
-                    showStudentLogin -> {
-                        StudentLoginScreen(
-                            onLoginSuccess = { user -> 
-                                currentUser = user
-                                showStudentLogin = false
-                            },
-                            onNavigateToRegister = {
-                                showStudentLogin = false
-                                showStudentRegister = true
-                            },
-                            onBackToRoleSelection = {
-                                showStudentLogin = false
-                                showRoleSelection = true
-                            }
-                        )
-                    }
-                    else -> {
-                        RoleSelectionScreen(
-                            onAdminSelected = {
-                                showRoleSelection = false
-                                showAdminLogin = true
-                            },
-                            onStudentSelected = {
-                                showRoleSelection = false
-                                showStudentLogin = true
-                            }
-                        )
-                    }
-                }
+                )
             }
         }
     }
@@ -157,41 +77,20 @@ class MainActivity : ComponentActivity() {
 @PreviewScreenSizes
 @Composable
 fun CampusMenuApp(
-    user: User,
     languageVersion: Int = 0,
-    onLogout: () -> Unit = {},
     onThemeChanged: () -> Unit = {},
     onLanguageChanged: () -> Unit = {}
 ) {
-    val isAdmin = user.role == UserRole.ADMIN
     var selectedDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    var currentUser by remember { mutableStateOf(user) }
     
     var currentDestination by rememberSaveable { 
-        mutableStateOf(if (isAdmin) AppDestinations.ADMIN else AppDestinations.HOME) 
+        mutableStateOf(AppDestinations.HOME) 
     }
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            if (isAdmin) {
-                // Admin menüsü
-                item(
-                    icon = {
-                        Icon(
-                            AppDestinations.ADMIN.icon,
-                            contentDescription = AppDestinations.ADMIN.label
-                        )
-                    },
-                    label = { Text(AppDestinations.ADMIN.label) },
-                    selected = currentDestination == AppDestinations.ADMIN,
-                    onClick = { currentDestination = AppDestinations.ADMIN }
-                )
-            }
-            
-            // Ortak menüler
-            AppDestinations.entries.filter { 
-                it != AppDestinations.ADMIN 
-            }.forEach {
+            // Tüm menüler
+            AppDestinations.entries.forEach {
                 item(
                     icon = {
                         Icon(
@@ -209,7 +108,6 @@ fun CampusMenuApp(
         when (currentDestination) {
             AppDestinations.HOME -> HomeScreen(
                 selectedDate = selectedDate,
-                user = currentUser,
                 languageVersion = languageVersion
             )
             AppDestinations.CALENDAR -> CalendarScreen(
@@ -220,30 +118,16 @@ fun CampusMenuApp(
                 }
             )
             AppDestinations.ANNOUNCEMENTS -> AnnouncementsScreen(
-                user = currentUser,
                 languageVersion = languageVersion
             )
             AppDestinations.FAVORITES -> FavoritesScreen(
-                user = currentUser,
                 languageVersion = languageVersion
             )
             AppDestinations.PROFILE -> ProfileScreen(
-                user = currentUser,
                 languageVersion = languageVersion,
-                onLogout = onLogout,
                 onThemeChanged = onThemeChanged,
-                onLanguageChanged = onLanguageChanged,
-                onAllergyUpdate = { allergens ->
-                    currentUser = currentUser.copy(allergens = allergens)
-                }
+                onLanguageChanged = onLanguageChanged
             )
-            AppDestinations.ADMIN -> {
-                if (isAdmin) {
-                    AdminMenuScreen()
-                } else {
-                    HomeScreen(selectedDate = selectedDate, user = currentUser)
-                }
-            }
         }
     }
 }
@@ -252,7 +136,6 @@ enum class AppDestinations(
     val label: String,
     val icon: ImageVector,
 ) {
-    ADMIN("Yönetim", Icons.Default.Dashboard),
     HOME("Ana Sayfa", Icons.Default.Home),
     CALENDAR("Takvim", Icons.Default.CalendarMonth),
     ANNOUNCEMENTS("Duyurular", Icons.Default.Announcement),

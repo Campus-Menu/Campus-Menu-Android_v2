@@ -12,10 +12,16 @@ object MenuHistoryRepository {
     private val menuHistory = mutableMapOf<LocalDate, List<MenuItem>>()
     
     init {
-        // Son 7 günün menülerini oluştur
+        // 260 günlük menü oluştur (geçmiş ve gelecek)
         val today = LocalDate.now()
-        for (i in 0..6) {
+        // Geçmiş 130 gün
+        for (i in 0..129) {
             val date = today.minusDays(i.toLong())
+            menuHistory[date] = generateMenuForDate(date)
+        }
+        // Gelecek 130 gün
+        for (i in 1..130) {
+            val date = today.plusDays(i.toLong())
             menuHistory[date] = generateMenuForDate(date)
         }
     }
@@ -32,7 +38,13 @@ object MenuHistoryRepository {
                 MenuItemData("Mercimek Çorbası", listOf()),
                 MenuItemData("Tavuk Suyu Çorbası", listOf()),
                 MenuItemData("Ezogelin Çorbası", listOf(Allergen.GLUTEN)),
-                MenuItemData("Yayla Çorbası", listOf(Allergen.EGGS))
+                MenuItemData("Yayla Çorbası", listOf(Allergen.EGGS)),
+                MenuItemData("Domates Çorbası", listOf()),
+                MenuItemData("Tarhana Çorbası", listOf(Allergen.GLUTEN)),
+                MenuItemData("Kelle Paça Çorbası", listOf()),
+                MenuItemData("İşkembe Çorbası", listOf()),
+                MenuItemData("Mantar Çorbası", listOf()),
+                MenuItemData("Sebze Çorbası", listOf())
             ),
             // Ana Yemekler
             listOf(
@@ -41,20 +53,37 @@ object MenuHistoryRepository {
                 MenuItemData("Makarna", listOf(Allergen.GLUTEN, Allergen.EGGS)),
                 MenuItemData("Tavuk Döner", listOf(Allergen.GLUTEN)),
                 MenuItemData("Izgara Tavuk", listOf()),
-                MenuItemData("Mantı", listOf(Allergen.GLUTEN, Allergen.EGGS, Allergen.DAIRY))
+                MenuItemData("Mantı", listOf(Allergen.GLUTEN, Allergen.EGGS, Allergen.DAIRY)),
+                MenuItemData("Karnıyarık", listOf()),
+                MenuItemData("İmam Bayıldı", listOf()),
+                MenuItemData("Etli Kuru Fasulye", listOf()),
+                MenuItemData("Nohut Yemeği", listOf()),
+                MenuItemData("Patlıcan Musakka", listOf()),
+                MenuItemData("Sebzeli Tavuk", listOf()),
+                MenuItemData("Balık", listOf(Allergen.FISH)),
+                MenuItemData("Köri Soslu Tavuk", listOf()),
+                MenuItemData("Güveç", listOf())
             ),
             // Yan Yemekler
             listOf(
                 MenuItemData("Pilav", listOf()),
                 MenuItemData("Patates Kızartması", listOf()),
                 MenuItemData("Bulgur Pilavı", listOf(Allergen.GLUTEN)),
-                MenuItemData("Makarna", listOf(Allergen.GLUTEN, Allergen.EGGS))
+                MenuItemData("Makarna", listOf(Allergen.GLUTEN, Allergen.EGGS)),
+                MenuItemData("Fırın Patates", listOf()),
+                MenuItemData("Püreli Patates", listOf(Allergen.DAIRY)),
+                MenuItemData("Haşlanmış Sebze", listOf()),
+                MenuItemData("Soslu Makarna", listOf(Allergen.GLUTEN))
             ),
             // Salatalar
             listOf(
                 MenuItemData("Mevsim Salata", listOf()),
                 MenuItemData("Çoban Salata", listOf()),
-                MenuItemData("Yeşil Salata", listOf())
+                MenuItemData("Yeşil Salata", listOf()),
+                MenuItemData("Rus Salatası", listOf(Allergen.EGGS)),
+                MenuItemData("Akdeniz Salata", listOf()),
+                MenuItemData("Ton Balıklı Salata", listOf(Allergen.FISH)),
+                MenuItemData("Kırmızı Lahana Salatası", listOf())
             ),
             // Tatlılar
             listOf(
@@ -62,14 +91,23 @@ object MenuHistoryRepository {
                 MenuItemData("Kazandibi", listOf(Allergen.DAIRY, Allergen.EGGS)),
                 MenuItemData("Aşure", listOf(Allergen.NUTS)),
                 MenuItemData("Muhallebi", listOf(Allergen.DAIRY)),
-                MenuItemData("Revani", listOf(Allergen.GLUTEN, Allergen.EGGS, Allergen.DAIRY))
+                MenuItemData("Revani", listOf(Allergen.GLUTEN, Allergen.EGGS, Allergen.DAIRY)),
+                MenuItemData("Şekerpare", listOf(Allergen.GLUTEN, Allergen.EGGS)),
+                MenuItemData("Tulumba Tatlısı", listOf(Allergen.GLUTEN)),
+                MenuItemData("Baklava", listOf(Allergen.GLUTEN, Allergen.NUTS)),
+                MenuItemData("Künefe", listOf(Allergen.GLUTEN, Allergen.DAIRY)),
+                MenuItemData("Keşkül", listOf(Allergen.DAIRY, Allergen.NUTS)),
+                MenuItemData("Meyve", listOf())
             ),
             // İçecekler
             listOf(
                 MenuItemData("Ayran", listOf(Allergen.DAIRY)),
                 MenuItemData("Kola", listOf()),
                 MenuItemData("Su", listOf()),
-                MenuItemData("Meyve Suyu", listOf())
+                MenuItemData("Meyve Suyu", listOf()),
+                MenuItemData("Çay", listOf()),
+                MenuItemData("Kahve", listOf()),
+                MenuItemData("Limonata", listOf())
             )
         )
         

@@ -20,16 +20,12 @@ import com.arikan.campusmenu.ui.theme.CampusMenuTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    user: User? = null,
     languageVersion: Int = 0,
-    onLogout: () -> Unit = {},
     onThemeChanged: () -> Unit = {},
     onLanguageChanged: () -> Unit = {},
-    onAllergyUpdate: (List<Allergen>) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
-    val currentUser = user ?: User(0, "Kullanıcı", "user@email.com", UserRole.STUDENT)
     
     var languageUpdateTrigger by remember { mutableStateOf(0) }
     
@@ -38,7 +34,6 @@ fun ProfileScreen(
         mutableStateOf(com.arikan.campusmenu.data.ThemePreferences.isDarkMode(context)) 
     }
     
-    var showAllergyDialog by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showNotificationsDialog by remember { mutableStateOf(false) }
@@ -68,10 +63,7 @@ fun ProfileScreen(
         ) {
             // Profil Başlığı
             Surface(
-                color = if (currentUser.role == UserRole.ADMIN)
-                    MaterialTheme.colorScheme.errorContainer
-                else
-                    MaterialTheme.colorScheme.secondaryContainer,
+                color = MaterialTheme.colorScheme.secondaryContainer,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
@@ -79,25 +71,16 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Surface(
-                        color = if (currentUser.role == UserRole.ADMIN)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = MaterialTheme.shapes.extraLarge,
                         modifier = Modifier.size(80.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
-                                imageVector = if (currentUser.role == UserRole.ADMIN)
-                                    Icons.Default.Shield
-                                else
-                                    Icons.Default.Person,
+                                imageVector = Icons.Default.Person,
                                 contentDescription = null,
                                 modifier = Modifier.size(48.dp),
-                                tint = if (currentUser.role == UserRole.ADMIN)
-                                    MaterialTheme.colorScheme.onError
-                                else
-                                    MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -105,57 +88,22 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     Text(
-                        text = currentUser.name,
+                        text = "Kullanıcı",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                     
                     Text(
-                        text = currentUser.email,
+                        text = "Campus Menu",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
-                    
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    // Rol Badge
-                    Surface(
-                        color = if (currentUser.role == UserRole.ADMIN)
-                            MaterialTheme.colorScheme.error
-                        else
-                            MaterialTheme.colorScheme.tertiary,
-                        shape = MaterialTheme.shapes.small
-                    ) {
-                        Text(
-                            text = if (currentUser.role == UserRole.ADMIN) "Admin" else "Öğrenci",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (currentUser.role == UserRole.ADMIN)
-                                MaterialTheme.colorScheme.onError
-                            else
-                                MaterialTheme.colorScheme.onTertiary,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                        )
-                    }
                 }
             }
             
             Spacer(modifier = Modifier.height(8.dp))
             
             // Menü Seçenekleri
-            // Alerji Seçimi (sadece öğrenciler için)
-            if (currentUser.role == UserRole.STUDENT) {
-                ProfileMenuItem(
-                    icon = Icons.Default.HealthAndSafety,
-                    title = com.arikan.campusmenu.data.LocaleHelper.getLocalizedString(context, "allergies"),
-                    subtitle = if (currentUser.allergens.isEmpty()) 
-                        com.arikan.campusmenu.data.LocaleHelper.getLocalizedString(context, "add_allergy_info")
-                    else 
-                        "${currentUser.allergens.size} ${com.arikan.campusmenu.data.LocaleHelper.getLocalizedString(context, "allergies_selected")}",
-                    onClick = { showAllergyDialog = true }
-                )
-            }
-            
             ProfileMenuItem(
                 icon = Icons.Default.Settings,
                 title = com.arikan.campusmenu.data.LocaleHelper.getLocalizedString(context, "settings"),
@@ -179,26 +127,7 @@ fun ProfileScreen(
                 title = com.arikan.campusmenu.data.LocaleHelper.getLocalizedString(context, "help_support"),
                 onClick = { showHelpDialog = true }
             )
-            
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
-            
-            ProfileMenuItem(
-                icon = Icons.Default.ExitToApp,
-                title = com.arikan.campusmenu.data.LocaleHelper.getLocalizedString(context, "logout"),
-                onClick = onLogout,
-                isDestructive = true
-            )
         }
-    }
-    
-    if (showAllergyDialog) {
-        AllergySelectionDialog(
-            user = currentUser,
-            onDismiss = { showAllergyDialog = false },
-            onSave = { allergens ->
-                onAllergyUpdate(allergens)
-            }
-        )
     }
     
     if (showAboutDialog) {

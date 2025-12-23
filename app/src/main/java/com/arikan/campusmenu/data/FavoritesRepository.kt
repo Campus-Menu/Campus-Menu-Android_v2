@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.File
 
 data class FavoriteItem(
-    val userId: Int,
+    val userId: Int = 0, // Artık kullanılmıyor ama geriye uyumluluk için tutuldu
     val menuItemId: Int,
     val menuItemName: String,
     val timestamp: String
@@ -46,10 +46,9 @@ object FavoritesRepository {
         }
     }
     
-    fun addFavorite(context: Context, userId: Int, menuItemId: Int, menuItemName: String) {
-        if (!isFavorite(userId, menuItemId)) {
+    fun addFavorite(context: Context, menuItemId: Int, menuItemName: String) {
+        if (!isFavorite(menuItemId)) {
             val favorite = FavoriteItem(
-                userId = userId,
                 menuItemId = menuItemId,
                 menuItemName = menuItemName,
                 timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME)
@@ -59,24 +58,24 @@ object FavoritesRepository {
         }
     }
     
-    fun removeFavorite(context: Context, userId: Int, menuItemId: Int) {
-        favorites.removeAll { it.userId == userId && it.menuItemId == menuItemId }
+    fun removeFavorite(context: Context, menuItemId: Int) {
+        favorites.removeAll { it.menuItemId == menuItemId }
         saveFavorites(context)
     }
     
-    fun isFavorite(userId: Int, menuItemId: Int): Boolean {
-        return favorites.any { it.userId == userId && it.menuItemId == menuItemId }
+    fun isFavorite(menuItemId: Int): Boolean {
+        return favorites.any { it.menuItemId == menuItemId }
     }
     
-    fun getUserFavorites(userId: Int): List<FavoriteItem> {
-        return favorites.filter { it.userId == userId }
+    fun getAllFavorites(): List<FavoriteItem> {
+        return favorites.toList()
     }
     
-    fun toggleFavorite(context: Context, userId: Int, menuItemId: Int, menuItemName: String) {
-        if (isFavorite(userId, menuItemId)) {
-            removeFavorite(context, userId, menuItemId)
+    fun toggleFavorite(context: Context, menuItemId: Int, menuItemName: String) {
+        if (isFavorite(menuItemId)) {
+            removeFavorite(context, menuItemId)
         } else {
-            addFavorite(context, userId, menuItemId, menuItemName)
+            addFavorite(context, menuItemId, menuItemName)
         }
     }
 }

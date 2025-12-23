@@ -23,15 +23,13 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnnouncementsScreen(
-    user: User? = null,
     languageVersion: Int = 0,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var announcements by remember { mutableStateOf<List<Announcement>>(emptyList()) }
     var selectedType by remember { mutableStateOf<AnnouncementType?>(null) }
-    var showAddDialog by remember { mutableStateOf(false) }
-    val isAdmin = user?.role == UserRole.ADMIN
+    val isAdmin = false // Admin özellikleri kaldırıldı
     
     fun refreshAnnouncements() {
         announcements = AnnouncementRepository.getActiveAnnouncements(context)
@@ -56,17 +54,6 @@ fun AnnouncementsScreen(
                         text = "Duyurular",
                         fontWeight = FontWeight.Bold
                     )
-                },
-                actions = {
-                    if (isAdmin) {
-                        IconButton(onClick = { showAddDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Duyuru Ekle",
-                                tint = Color.White
-                            )
-                        }
-                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -159,17 +146,7 @@ fun AnnouncementsScreen(
             }
         }
     }
-    
-    if (showAddDialog) {
-        AddAnnouncementDialog(
-            onDismiss = { showAddDialog = false },
-            onConfirm = { title, message, type ->
-                AnnouncementRepository.addAnnouncement(context, title, message, type)
-                refreshAnnouncements()
-                showAddDialog = false
-            }
-        )
-    }
+}
 }
 
 @Composable
